@@ -2,58 +2,9 @@ package com.techlounge.creativeeye.io;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 public class CEMouse {
-
-    public enum Action {
-        BUTTON_DOWN,
-        BUTTON_UP,
-        BUTTON_NO_ACTION;
-
-        public static Action getAction(int action) {
-            return switch (action) {
-                case 0 -> BUTTON_UP;
-                case 1 -> BUTTON_DOWN;
-                default -> BUTTON_NO_ACTION;
-            };
-        }
-    }
-
-    public enum Button {
-        MOUSE_LEFT,
-        MOUSE_RIGHT,
-        MOUSE_MIDDLE,
-        MOUSE_NO_BUTTON;
-
-        public static Button getButton(int button) {
-            return switch (button) {
-                case 0 -> MOUSE_LEFT;
-                case 1 -> MOUSE_RIGHT;
-                case 2 -> MOUSE_MIDDLE;
-                default -> MOUSE_NO_BUTTON;
-            };
-        }
-    }
-
-    public enum Mod {
-        SHIFT_MOD,
-        CONTROL_MOD,
-        ALT_MOD,
-        NO_MOD;
-
-        public static Mod[] getMods(int mods) {
-            return switch (mods) {
-                case 1 -> new Mod[] {SHIFT_MOD};
-                case 2 -> new Mod[] {CONTROL_MOD};
-                case 3 -> new Mod[] {SHIFT_MOD, CONTROL_MOD};
-                case 4 -> new Mod[] {ALT_MOD};
-                case 5 -> new Mod[] {SHIFT_MOD, ALT_MOD};
-                case 6 -> new Mod[] {CONTROL_MOD, ALT_MOD};
-                case 7 -> new Mod[] {SHIFT_MOD, CONTROL_MOD, ALT_MOD};
-                default -> new Mod[] {NO_MOD};
-            };
-        }
-    }
 
     private CEKeyboardMouseListener keyboardMouseListener;
 
@@ -63,17 +14,17 @@ public class CEMouse {
     private double mouseXPos = 0;
     private double mouseYPos = 0;
 
-    public GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
+    private final GLFWMouseButtonCallback mouseButtonCallback = new GLFWMouseButtonCallback() {
         @Override
         public void invoke(long window, int button, int action, int mods) {
             clickButton = button;
             clickAction = action;
             clickMods = mods;
-            keyboardMouseListener.onMouse(Button.getButton(clickButton), Action.getAction(clickAction), Mod.getMods(clickMods), mouseXPos, mouseYPos);
+            keyboardMouseListener.onMouse(CEInput.MouseButton.getButton(clickButton), CEInput.MouseButtonAction.getAction(clickAction), CEInput.Mod.getMods(clickMods), mouseXPos, mouseYPos);
         }
     };
 
-    public GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
+    private final GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
         @Override
         public void invoke(long window, double xpos, double ypos) {
             mouseXPos = xpos;
@@ -83,11 +34,36 @@ public class CEMouse {
                 clickButton = 3;
                 clickMods = 0;
             }
-            keyboardMouseListener.onMouse(Button.getButton(clickButton), Action.getAction(clickAction), Mod.getMods(clickMods), mouseXPos, mouseYPos);
+            keyboardMouseListener.onMouse(CEInput.MouseButton.getButton(clickButton), CEInput.MouseButtonAction.getAction(clickAction), CEInput.Mod.getMods(clickMods), mouseXPos, mouseYPos);
+        }
+    };
+
+    private final GLFWScrollCallback scrollCallback = new GLFWScrollCallback() {
+        @Override
+        public void invoke(long window, double xoffset, double yoffset) {
+            keyboardMouseListener.onScroll(xoffset, yoffset);
         }
     };
 
     public void setKeyboardMouseListener(CEKeyboardMouseListener keyboardMouseListener) {
         this.keyboardMouseListener = keyboardMouseListener;
+    }
+
+    public GLFWMouseButtonCallback getMouseButtonCallback() {
+        return mouseButtonCallback;
+    }
+
+    public GLFWCursorPosCallback getCursorPosCallback() {
+        return cursorPosCallback;
+    }
+
+    public GLFWScrollCallback getScrollCallback() {
+        return scrollCallback;
+    }
+
+    public void release() {
+        this.cursorPosCallback.free();
+        this.mouseButtonCallback.free();
+        this.scrollCallback.free();
     }
 }

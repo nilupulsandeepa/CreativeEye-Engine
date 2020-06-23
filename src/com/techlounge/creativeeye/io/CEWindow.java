@@ -22,7 +22,11 @@ public class CEWindow {
     private CEKeyboard keyboardCallback;
     private CEMouse mouseCallback;
 
+    private int frames;
+    private static long time;
+
     public CEWindow(int windowWidth, int windowHeight) {
+        System.out.println("Window Initialization");
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         this.windowTitle = "Creative Eye";
@@ -35,10 +39,12 @@ public class CEWindow {
 
     public void create() throws CEException {
 
+        //Setting GLFW error callback for development
         GLFWErrorCallback.createPrint(System.err).set();
 
         //Initialize GLFW. Return false if not initialized
         if(!GLFW.glfwInit()) {
+            //Throws an exception if glfw not initialized
             throw new CEWindowException(ErrorCode.GLFW_INIT_FAILED.errorMessage);
         }
 
@@ -47,7 +53,7 @@ public class CEWindow {
 
         //Creating GLFW Window
         this.window = GLFW.glfwCreateWindow(this.windowWidth, this.windowHeight, this.windowTitle, 0, 0);
-        //If window not created
+        //If window not created throw an exception
         if (this.window == 0) {
             GLFW.glfwTerminate();
             throw new CEWindowException(ErrorCode.GLFW_CREATE_WINDOW_FAILED.errorMessage);
@@ -75,10 +81,18 @@ public class CEWindow {
     }
 
     public void updateEvents() {
+        //FPS counter. Will be removed later
+        frames++;
+        if (System.currentTimeMillis() > time + 1000) {
+            GLFW.glfwSetWindowTitle(window, this.windowTitle + " | FPS: " + frames);
+            time = System.currentTimeMillis();
+            frames = 0;
+        }
         GLFW.glfwPollEvents();
     }
 
     public void render() {
+        //Swapping front and back buffers
         GLFW.glfwSwapBuffers(this.window);
     }
 
@@ -88,16 +102,23 @@ public class CEWindow {
         this.mouseCallback = new CEMouse();
         this.mouseCallback.setKeyboardMouseListener(keyboardMouseListener);
 
+        //Setting up Keyboard, Mouse Buttons and Mouse Position callbacks for the window
         GLFW.glfwSetKeyCallback(this.window, this.keyboardCallback);
-        GLFW.glfwSetMouseButtonCallback(this.window, this.mouseCallback.mouseButtonCallback);
-        GLFW.glfwSetCursorPosCallback(this.window, this.mouseCallback.cursorPosCallback);
+        GLFW.glfwSetMouseButtonCallback(this.window, this.mouseCallback.getMouseButtonCallback());
+        GLFW.glfwSetCursorPosCallback(this.window, this.mouseCallback.getCursorPosCallback());
+        GLFW.glfwSetScrollCallback(this.window, this.mouseCallback.getScrollCallback());
     }
 
     public boolean shouldWindowClose() {
+        //Check if window should close or not
         return GLFW.glfwWindowShouldClose(this.window);
     }
 
     public void close() {
+        //Releasing input instances
+        this.keyboardCallback.release();
+        this.mouseCallback.release();
+        //Marking window to be closed
         GLFW.glfwSetWindowShouldClose(this.window, true);
     }
 }

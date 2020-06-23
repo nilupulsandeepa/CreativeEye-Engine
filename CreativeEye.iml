@@ -10,5 +10,6 @@
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="lwjgl-glfw" level="project" />
     <orderEntry type="library" name="lwjgl-jemalloc" level="project" />
+    <orderEntry type="library" name="lwjgl-opengl" level="project" />
   </component>
 </module>
