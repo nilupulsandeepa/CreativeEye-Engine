@@ -1,10 +1,10 @@
 package com.techlounge.creativeeye.io;
 
-import com.techlounge.creativeeye.error.CEErrorCallback;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.error.CEWindowException;
 import com.techlounge.creativeeye.error.ErrorCode;
 import org.lwjgl.glfw.*;
+import org.lwjgl.system.CallbackI;
 
 public class CEWindow {
 
@@ -12,15 +12,29 @@ public class CEWindow {
     private int windowWidth;
     private int windowHeight;
 
+    //Window position
+    private int windowPosX;
+    private int windowPosY;
+
     //Window title
     private String windowTitle;
 
     //Window
     private long window;
 
-    //Window Keyboard, Mouse callbacks
+    //Window, Keyboard, Mouse callbacks
     private CEKeyboard keyboardCallback;
     private CEMouse mouseCallback;
+
+    private GLFWWindowSizeCallback windowSizeCallback;
+    private GLFWWindowPosCallback windowPosCallback;
+
+    //Primary monitor
+    private long primaryMonitor;
+    private GLFWVidMode primaryMonitorVideoMode;
+
+    //Check if in fullscreen
+    private boolean isFullscreen = false;
 
     private int frames;
     private static long time;
@@ -49,7 +63,7 @@ public class CEWindow {
         }
 
         //Get primary monitor
-        long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
+        this.primaryMonitor = GLFW.glfwGetPrimaryMonitor();
 
         //Creating GLFW Window
         this.window = GLFW.glfwCreateWindow(this.windowWidth, this.windowHeight, this.windowTitle, 0, 0);
@@ -60,10 +74,12 @@ public class CEWindow {
         }
 
         //Get monitor properties
-        GLFWVidMode primaryMonitorVideoMode = GLFW.glfwGetVideoMode(primaryMonitor);
+        this.primaryMonitorVideoMode = GLFW.glfwGetVideoMode(primaryMonitor);
         if (primaryMonitorVideoMode != null) {
             //Positioning game window at center of the monitor
-            GLFW.glfwSetWindowPos(this.window, (primaryMonitorVideoMode.width() - this.windowWidth) / 2, (primaryMonitorVideoMode.height() - this.windowHeight) / 2);
+            this.windowPosX = (this.primaryMonitorVideoMode.width() - this.windowWidth) / 2;
+            this.windowPosY = (this.primaryMonitorVideoMode.height() - this.windowHeight) / 2;
+            GLFW.glfwSetWindowPos(this.window, this.windowPosX, this.windowPosY);
 
         } else {
             GLFW.glfwTerminate();
@@ -96,6 +112,32 @@ public class CEWindow {
         GLFW.glfwSwapBuffers(this.window);
     }
 
+    public void setWindowSizeCallback(CEWindowResizeCallback windowResizeCallback) {
+        this.windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                if (!isFullscreen) {
+                    windowWidth = width;
+                    windowHeight = height;
+                }
+                windowResizeCallback.onResize(width, height);
+            }
+        };
+
+        this.windowPosCallback = new GLFWWindowPosCallback() {
+            @Override
+            public void invoke(long window, int xpos, int ypos) {
+                if (!isFullscreen) {
+                    windowPosX = xpos;
+                    windowPosY = ypos;
+                }
+            }
+        };
+
+        GLFW.glfwSetWindowSizeCallback(this.window, this.windowSizeCallback);
+        GLFW.glfwSetWindowPosCallback(this.window, this.windowPosCallback);
+    }
+
     public void setKeyboardMouseListener(CEKeyboardMouseListener keyboardMouseListener) {
         this.keyboardCallback = new CEKeyboard();
         this.keyboardCallback.setKeyboardMouseListener(keyboardMouseListener);
@@ -109,6 +151,15 @@ public class CEWindow {
         GLFW.glfwSetScrollCallback(this.window, this.mouseCallback.getScrollCallback());
     }
 
+    public void toggleFullScreen() {
+        this.isFullscreen = !this.isFullscreen;
+        if (this.isFullscreen) {
+            GLFW.glfwSetWindowMonitor(this.window, this.primaryMonitor, 0, 0, this.primaryMonitorVideoMode.width(), this.primaryMonitorVideoMode.height(), this.primaryMonitorVideoMode.refreshRate());
+        } else {
+            GLFW.glfwSetWindowMonitor(this.window, 0, this.windowPosX, this.windowPosY, this.windowWidth, this.windowHeight, this.primaryMonitorVideoMode.refreshRate());
+        }
+    }
+
     public boolean shouldWindowClose() {
         //Check if window should close or not
         return GLFW.glfwWindowShouldClose(this.window);
@@ -120,5 +171,13 @@ public class CEWindow {
         this.mouseCallback.release();
         //Marking window to be closed
         GLFW.glfwSetWindowShouldClose(this.window, true);
+    }
+
+    public int getWindowWidth() {
+        return windowWidth;
+    }
+
+    public int getWindowHeight() {
+        return windowHeight;
     }
 }
