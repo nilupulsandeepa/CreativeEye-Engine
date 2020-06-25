@@ -4,7 +4,6 @@ import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.error.CEWindowException;
 import com.techlounge.creativeeye.error.ErrorCode;
 import org.lwjgl.glfw.*;
-import org.lwjgl.system.CallbackI;
 
 public class CEWindow {
 
@@ -40,7 +39,6 @@ public class CEWindow {
     private static long time;
 
     public CEWindow(int windowWidth, int windowHeight) {
-        System.out.println("Window Initialization");
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         this.windowTitle = "Creative Eye";

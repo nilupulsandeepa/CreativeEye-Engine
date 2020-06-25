@@ -2,7 +2,12 @@ package com.techlounge.creativeeye;
 
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.graphics.CERenderer;
-import com.techlounge.creativeeye.io.*;
+import com.techlounge.creativeeye.graphics.geometries.CERectangle;
+import com.techlounge.creativeeye.graphics.geometries.CETriangle;
+import com.techlounge.creativeeye.io.CEInput;
+import com.techlounge.creativeeye.io.CEKeyboardMouseListener;
+import com.techlounge.creativeeye.io.CEWindow;
+import com.techlounge.creativeeye.io.CEWindowResizeCallback;
 import com.techlounge.creativeeye.physics.CEPhysicsEngine;
 
 public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
@@ -21,7 +26,6 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
     }
 
     public void init() {
-        System.out.println("Game Engine Initialization");
         this.window = new CEWindow(1000, 700);
         try {
             this.window.create();
@@ -47,7 +51,6 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
 
             //Updating event on window
             this.window.updateEvents();
-
             //Window buffer swap
             this.window.render();
         }
@@ -66,6 +69,14 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
             this.window.close();
         } else if (key == CEInput.Key.KEY_F && mods.length == 1 && mods[0] == CEInput.Mod.CONTROL_MOD && action == CEInput.KeyAction.KEY_RELEASE) {
             this.window.toggleFullScreen();
+        } else if (key == CEInput.Key.KEY_T && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CETriangle());
+        } else if (key == CEInput.Key.KEY_R && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CERectangle());
+        } else if (key == CEInput.Key.KEY_DELETE && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
         }
     }
 

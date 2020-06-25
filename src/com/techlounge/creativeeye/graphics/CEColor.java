@@ -1,4 +1,4 @@
-package com.techlounge.creativeeye.graphics.models;
+package com.techlounge.creativeeye.graphics;
 
 public class CEColor {
     private final float red;
