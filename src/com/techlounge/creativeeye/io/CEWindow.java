@@ -2,7 +2,7 @@ package com.techlounge.creativeeye.io;
 
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.error.CEWindowException;
-import com.techlounge.creativeeye.error.ErrorCode;
+import com.techlounge.creativeeye.error.CEErrorCode;
 import org.lwjgl.glfw.*;
 
 public class CEWindow {
@@ -57,7 +57,7 @@ public class CEWindow {
         //Initialize GLFW. Return false if not initialized
         if(!GLFW.glfwInit()) {
             //Throws an exception if glfw not initialized
-            throw new CEWindowException(ErrorCode.GLFW_INIT_FAILED.errorMessage);
+            throw new CEWindowException(CEErrorCode.GLFW_INIT_FAILED.errorMessage);
         }
 
         //Get primary monitor
@@ -68,7 +68,7 @@ public class CEWindow {
         //If window not created throw an exception
         if (this.window == 0) {
             GLFW.glfwTerminate();
-            throw new CEWindowException(ErrorCode.GLFW_CREATE_WINDOW_FAILED.errorMessage);
+            throw new CEWindowException(CEErrorCode.GLFW_CREATE_WINDOW_FAILED.errorMessage);
         }
 
         //Get monitor properties
@@ -82,7 +82,7 @@ public class CEWindow {
         } else {
             GLFW.glfwTerminate();
             GLFW.glfwDestroyWindow(this.window);
-            throw new CEWindowException(ErrorCode.GLFW_MONITOR_PROPERTIES_UNAVAILABLE.errorMessage);
+            throw new CEWindowException(CEErrorCode.GLFW_MONITOR_PROPERTIES_UNAVAILABLE.errorMessage);
         }
 
         GLFW.glfwMakeContextCurrent(this.window);

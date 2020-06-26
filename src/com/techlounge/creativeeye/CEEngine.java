@@ -1,7 +1,9 @@
 package com.techlounge.creativeeye;
 
+import com.techlounge.creativeeye.error.CEErrorCallback;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.graphics.CERenderer;
+import com.techlounge.creativeeye.graphics.geometries.CEColorTriangle;
 import com.techlounge.creativeeye.graphics.geometries.CERectangle;
 import com.techlounge.creativeeye.graphics.geometries.CETriangle;
 import com.techlounge.creativeeye.io.CEInput;
@@ -10,7 +12,9 @@ import com.techlounge.creativeeye.io.CEWindow;
 import com.techlounge.creativeeye.io.CEWindowResizeCallback;
 import com.techlounge.creativeeye.physics.CEPhysicsEngine;
 
-public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
+public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback, CEErrorCallback {
+
+    public static CEEngine errorCallback;
 
     //Window
     private CEWindow window;
@@ -21,11 +25,12 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
     //Physics
     private CEPhysicsEngine physicsEngine;
 
-    public Engine() {
+    public CEEngine() {
         this.init();
     }
 
     public void init() {
+        CEEngine.errorCallback = this;
         this.window = new CEWindow(1000, 700);
         try {
             this.window.create();
@@ -56,6 +61,7 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
         }
     }
 
+    @Override
     public void onError(CEException error) {
         System.out.println(error.getMessage());
         System.exit(-1);
@@ -75,6 +81,9 @@ public class Engine implements CEKeyboardMouseListener, CEWindowResizeCallback {
         } else if (key == CEInput.Key.KEY_R && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CERectangle());
+        } else if (key == CEInput.Key.KEY_C && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CEColorTriangle());
         } else if (key == CEInput.Key.KEY_DELETE && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
         }

@@ -13,6 +13,13 @@ public class CEColor {
         this.alpha = alpha;
     }
 
+    public CEColor(int red, int green, int blue, int alpha) {
+        this.red = red / 255.0F;
+        this.green = green / 255.0F;
+        this.blue = blue / 255.0F;
+        this.alpha = alpha / 255.0F;
+    }
+
     public float getRed() {
         return red;
     }

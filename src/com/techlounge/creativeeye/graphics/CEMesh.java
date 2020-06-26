@@ -15,6 +15,8 @@ public class CEMesh {
     public int vertexBuffer;
     public int indexBuffer;
 
+    public CEShader meshShader;
+
     public CEMesh() {
 
     }
@@ -23,6 +25,11 @@ public class CEMesh {
         this.vertices = vertices;
         this.indices = indices;
         this.create();
+    }
+
+    public CEMesh(CEVertex[] vertices, int[] indices, CEShader shader) {
+        this(vertices, indices);
+        this.meshShader = shader;
     }
 
     public void create() {
@@ -40,7 +47,7 @@ public class CEMesh {
         }
         vertexDataBuffer.put(vertexData).flip();
 
-        //Generate buffer for vao
+        //Generate buffer for vbo
         this.vertexBuffer = GL32.glGenBuffers();
         GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, this.vertexBuffer);
         GL32.glBufferData(GL32.GL_ARRAY_BUFFER, vertexDataBuffer, GL32.GL_STATIC_DRAW);
@@ -50,6 +57,7 @@ public class CEMesh {
         IntBuffer indexDataBuffer = MemoryUtil.memAllocInt(this.indices.length);
         indexDataBuffer.put(this.indices).flip();
 
+        //Generate buffer for ibo
         this.indexBuffer = GL32.glGenBuffers();
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, this.indexBuffer);
         GL32.glBufferData(GL32.GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer, GL32.GL_STATIC_DRAW);
@@ -72,9 +80,24 @@ public class CEMesh {
         GL32.glBindVertexArray(this.vertexArray);
         GL32.glEnableVertexAttribArray(0);
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-        GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
+        if (this.meshShader != null) {
+            GL32.glUseProgram(this.meshShader.getShaderProgram());
+            GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
+            GL32.glUseProgram(0);
+        } else {
+            GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
+        }
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, 0);
         GL32.glDisableVertexAttribArray(0);
         GL32.glBindVertexArray(0);
+    }
+
+    public void releaseMesh() {
+        GL32.glDeleteBuffers(this.vertexBuffer);
+        GL32.glDeleteBuffers(this.indexBuffer);
+        GL32.glDeleteVertexArrays(this.vertexArray);
+        if (this.meshShader != null) {
+            this.meshShader.releaseShaderProgram();
+        }
     }
 }

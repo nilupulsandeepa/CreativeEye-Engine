@@ -1,5 +1,5 @@
 package com.techlounge.creativeeye.error;
 
 public interface CEErrorCallback {
-    void onError(ErrorCode error);
+    void onError(CEException error);
 }

@@ -1,8 +1,8 @@
-import com.techlounge.creativeeye.Engine;
+import com.techlounge.creativeeye.CEEngine;
 
 public class CreativeEyeApplication {
 
-    private Engine gameEngine;
+    private CEEngine gameEngine;
 
     public static void main(String[] args) {
         CreativeEyeApplication creativeEyeApplication = new CreativeEyeApplication();
@@ -10,7 +10,7 @@ public class CreativeEyeApplication {
     }
 
     public void startGameEngine() {
-        this.gameEngine = new Engine();
+        this.gameEngine = new CEEngine();
         this.gameEngine.start();
     }
 }

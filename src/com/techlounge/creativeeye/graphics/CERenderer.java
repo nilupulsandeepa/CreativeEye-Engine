@@ -21,7 +21,7 @@ public class CERenderer {
     private void init(int width, int height) {
         this.viewPortWidth = width;
         this.viewPortHeight = height;
-        this.clearColor = new CEColor(1.0F, 0.42F, 0.0F, 0.38F);
+        this.clearColor = new CEColor(232, 207, 255, 255);
         this.meshArray = new ArrayList<>();
         this.setupOpenGL();
     }
@@ -50,6 +50,9 @@ public class CERenderer {
     }
 
     public void clearAllMeshes() {
+        for (CEMesh mesh : this.meshArray) {
+            mesh.releaseMesh();
+        }
         this.meshArray.clear();
     }
 }
