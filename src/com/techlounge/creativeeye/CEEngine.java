@@ -3,9 +3,7 @@ package com.techlounge.creativeeye;
 import com.techlounge.creativeeye.error.CEErrorCallback;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.graphics.CERenderer;
-import com.techlounge.creativeeye.graphics.geometries.CEColorTriangle;
-import com.techlounge.creativeeye.graphics.geometries.CERectangle;
-import com.techlounge.creativeeye.graphics.geometries.CETriangle;
+import com.techlounge.creativeeye.graphics.geometries.*;
 import com.techlounge.creativeeye.io.CEInput;
 import com.techlounge.creativeeye.io.CEKeyboardMouseListener;
 import com.techlounge.creativeeye.io.CEWindow;
@@ -32,13 +30,9 @@ public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback
     public void init() {
         CEEngine.errorCallback = this;
         this.window = new CEWindow(1000, 700);
-        try {
-            this.window.create();
-            this.window.setKeyboardMouseListener(this);
-            this.window.setWindowSizeCallback(this);
-        } catch (CEException e) {
-            this.onError(e);
-        }
+        this.window.create();
+        this.window.setKeyboardMouseListener(this);
+        this.window.setWindowSizeCallback(this);
         this.renderer = new CERenderer(this.window.getWindowWidth(), this.window.getWindowHeight());
         this.physicsEngine = new CEPhysicsEngine();
     }
@@ -64,6 +58,7 @@ public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback
     @Override
     public void onError(CEException error) {
         System.out.println(error.getMessage());
+        this.window.close();
         System.exit(-1);
     }
 
@@ -75,15 +70,24 @@ public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback
             this.window.close();
         } else if (key == CEInput.Key.KEY_F && mods.length == 1 && mods[0] == CEInput.Mod.CONTROL_MOD && action == CEInput.KeyAction.KEY_RELEASE) {
             this.window.toggleFullScreen();
-        } else if (key == CEInput.Key.KEY_T && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+        } else if (key == CEInput.Key.KEY_Q && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CETriangle());
-        } else if (key == CEInput.Key.KEY_R && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+        } else if (key == CEInput.Key.KEY_W && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CERectangle());
-        } else if (key == CEInput.Key.KEY_C && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+        } else if (key == CEInput.Key.KEY_E && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CEColorTriangle());
+        } else if (key == CEInput.Key.KEY_R && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CEColorRectangle());
+        } else if (key == CEInput.Key.KEY_T && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CECustomColorTriangle());
+        } else if (key == CEInput.Key.KEY_Y && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CECustomColorRectangle());
         } else if (key == CEInput.Key.KEY_DELETE && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
         }

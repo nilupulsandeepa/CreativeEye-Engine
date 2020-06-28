@@ -1,5 +1,6 @@
 package com.techlounge.creativeeye.io;
 
+import com.techlounge.creativeeye.CEEngine;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.error.CEWindowException;
 import com.techlounge.creativeeye.error.CEErrorCode;
@@ -49,7 +50,7 @@ public class CEWindow {
         this.windowTitle = windowTitle;
     }
 
-    public void create() throws CEException {
+    public void create() {
 
         //Setting GLFW error callback for development
         GLFWErrorCallback.createPrint(System.err).set();
@@ -57,7 +58,8 @@ public class CEWindow {
         //Initialize GLFW. Return false if not initialized
         if(!GLFW.glfwInit()) {
             //Throws an exception if glfw not initialized
-            throw new CEWindowException(CEErrorCode.GLFW_INIT_FAILED.errorMessage);
+            CEEngine.errorCallback.onError(new CEWindowException(CEErrorCode.GLFW_INIT_FAILED.errorMessage));
+            return;
         }
 
         //Get primary monitor
@@ -68,7 +70,8 @@ public class CEWindow {
         //If window not created throw an exception
         if (this.window == 0) {
             GLFW.glfwTerminate();
-            throw new CEWindowException(CEErrorCode.GLFW_CREATE_WINDOW_FAILED.errorMessage);
+            CEEngine.errorCallback.onError(new CEWindowException(CEErrorCode.GLFW_CREATE_WINDOW_FAILED.errorMessage));
+            return;
         }
 
         //Get monitor properties
@@ -82,7 +85,8 @@ public class CEWindow {
         } else {
             GLFW.glfwTerminate();
             GLFW.glfwDestroyWindow(this.window);
-            throw new CEWindowException(CEErrorCode.GLFW_MONITOR_PROPERTIES_UNAVAILABLE.errorMessage);
+            CEEngine.errorCallback.onError(new CEWindowException(CEErrorCode.GLFW_MONITOR_PROPERTIES_UNAVAILABLE.errorMessage));
+            return;
         }
 
         GLFW.glfwMakeContextCurrent(this.window);
