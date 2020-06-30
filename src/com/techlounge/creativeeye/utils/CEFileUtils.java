@@ -3,8 +3,16 @@ package com.techlounge.creativeeye.utils;
 import com.techlounge.creativeeye.CEEngine;
 import com.techlounge.creativeeye.error.CEFileException;
 import com.techlounge.creativeeye.error.CEErrorCode;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.system.MemoryStack;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Properties;
 
 public class CEFileUtils {
@@ -41,5 +49,25 @@ public class CEFileUtils {
             return null;
         }
         return propertyValue;
+    }
+
+    public static CETextureImage getTextureImage(String fileName) {
+        int width;
+        int height;
+        ByteBuffer imageByteBuffer;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer c = stack.mallocInt(1);
+
+            imageByteBuffer = STBImage.stbi_load(fileName, w, h, c,4);
+            width = w.get();
+            height = h.get();
+
+        } catch (Exception e) {
+            CEEngine.errorCallback.onError(new CEFileException(CEErrorCode.JAVA_CANNOT_ALLOCATE_MEMORY.errorMessage));
+            return null;
+        }
+        return new CETextureImage(imageByteBuffer, width, height);
     }
 }

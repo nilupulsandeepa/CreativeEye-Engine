@@ -92,7 +92,7 @@ public class CEWindow {
         GLFW.glfwMakeContextCurrent(this.window);
 
         //Wait for screen to finish update before calling swapBuffers
-        GLFW.glfwSwapInterval(1);
+        GLFW.glfwSwapInterval(0);
 
         //Showing created window
         GLFW.glfwShowWindow(this.window);

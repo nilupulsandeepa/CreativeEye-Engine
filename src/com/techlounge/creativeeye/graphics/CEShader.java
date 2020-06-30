@@ -34,7 +34,7 @@ public class CEShader {
         GL32.glCompileShader(this.vertexShaderID);
 
         if (GL32.glGetShaderi(this.vertexShaderID, GL32.GL_COMPILE_STATUS) == GL32.GL_FALSE) {
-            CEEngine.errorCallback.onError(new CEShaderException(GL32.glGetShaderInfoLog(this.fragmentShaderID)));
+            CEEngine.errorCallback.onError(new CEShaderException(GL32.glGetShaderInfoLog(this.vertexShaderID)));
             return;
         }
 

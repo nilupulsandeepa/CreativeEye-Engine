@@ -15,11 +15,14 @@ public class CEMesh {
 
     public int vertexBuffer;
     public int colorBuffer;
+    public int uvBuffer;
     public int indexBuffer;
 
     private ArrayList<String> attributeNameList;
 
     public CEShader meshShader;
+
+    public CEMaterial material;
 
     public CEMesh() {
 
@@ -34,6 +37,11 @@ public class CEMesh {
     public CEMesh(CEVertex[] vertices, int[] indices, CEShader shader) {
         this(vertices, indices);
         this.meshShader = shader;
+    }
+
+    public CEMesh(CEVertex[] vertices, int[] indices, CEShader shader, CEMaterial material) {
+        this(vertices, indices, shader);
+        this.material = material;
     }
 
     public void create() {
@@ -56,10 +64,10 @@ public class CEMesh {
         this.vertexBuffer = GL32.glGenBuffers();
         GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, this.vertexBuffer);
         GL32.glBufferData(GL32.GL_ARRAY_BUFFER, vertexDataBuffer, GL32.GL_STATIC_DRAW);
-        GL32.glVertexAttribPointer(0, 3, GL32.GL_FLOAT, false, 0, 0);
+        GL32.glVertexAttribPointer(this.attributeNameList.size(), 3, GL32.GL_FLOAT, false, 0, 0);
         GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, 0);
 
-        attributeNameList.add("vertexPosition");
+        this.attributeNameList.add("vertexPosition");
 
         if (this.vertices[0].getColor() != null) {
             FloatBuffer colorDataBuffer = MemoryUtil.memAllocFloat(this.vertices.length * 4);
@@ -75,10 +83,28 @@ public class CEMesh {
             this.colorBuffer = GL32.glGenBuffers();
             GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, this.colorBuffer);
             GL32.glBufferData(GL32.GL_ARRAY_BUFFER, colorDataBuffer, GL32.GL_STATIC_DRAW);
-            GL32.glVertexAttribPointer(1, 4, GL32.GL_FLOAT, false, 0, 0);
+            GL32.glVertexAttribPointer(this.attributeNameList.size(), 4, GL32.GL_FLOAT, false, 0, 0);
             GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, 0);
 
-            attributeNameList.add("vertexColor");
+            this.attributeNameList.add("vertexColor");
+        }
+
+        if (this.vertices[0].getUvCoordinates() != null) {
+            FloatBuffer uvDataBuffer = MemoryUtil.memAllocFloat(this.vertices.length * 2);
+            float[] uvData = new float[this.vertices.length * 2];
+            for (int i = 0; i < this.vertices.length; i++) {
+                uvData[i * 2] = this.vertices[i].getUvCoordinates().getX();
+                uvData[(i * 2) + 1] = this.vertices[i].getUvCoordinates().getY();
+            }
+            uvDataBuffer.put(uvData).flip();
+
+            this.uvBuffer = GL32.glGenBuffers();
+            GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, this.uvBuffer);
+            GL32.glBufferData(GL32.GL_ARRAY_BUFFER, uvDataBuffer, GL32.GL_STATIC_DRAW);
+            GL32.glVertexAttribPointer(this.attributeNameList.size(), 2, GL32.GL_FLOAT, false, 0, 0);
+            GL32.glBindBuffer(GL32.GL_ARRAY_BUFFER, 0);
+
+            this.attributeNameList.add("uvCoordinates");
         }
 
         GL32.glBindVertexArray(0);
@@ -94,6 +120,10 @@ public class CEMesh {
 
         if (this.meshShader != null) {
             this.meshShader.create(attributeNameList.toArray(new String[0]));
+        }
+
+        if (this.material != null) {
+            this.material.create();
         }
     }
 
@@ -115,12 +145,19 @@ public class CEMesh {
             GL32.glEnableVertexAttribArray(i);
         }
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+        if (this.material != null) {
+            GL32.glActiveTexture(GL32.GL_TEXTURE0);
+            GL32.glBindTexture(GL32.GL_TEXTURE_2D, this.material.getTexture().getTexture());
+        }
         if (this.meshShader != null) {
             GL32.glUseProgram(this.meshShader.getShaderProgram());
             GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
             GL32.glUseProgram(0);
         } else {
             GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
+        }
+        if (this.material != null) {
+            GL32.glBindTexture(GL32.GL_TEXTURE_2D,0);
         }
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, 0);
         for (int i = 0; i < this.attributeNameList.size(); i++) {
@@ -130,11 +167,17 @@ public class CEMesh {
     }
 
     public void releaseMesh() {
+        this.attributeNameList.clear();
+        this.vertices = null;
+        this.indices = null;
         GL32.glDeleteBuffers(this.vertexBuffer);
         GL32.glDeleteBuffers(this.indexBuffer);
         GL32.glDeleteVertexArrays(this.vertexArray);
         if (this.meshShader != null) {
             this.meshShader.releaseShaderProgram();
+        }
+        if (this.material != null) {
+            this.material.getTexture().release();
         }
     }
 }

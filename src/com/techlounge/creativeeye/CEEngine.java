@@ -3,6 +3,7 @@ package com.techlounge.creativeeye;
 import com.techlounge.creativeeye.error.CEErrorCallback;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.graphics.CERenderer;
+import com.techlounge.creativeeye.graphics.CETexture;
 import com.techlounge.creativeeye.graphics.geometries.*;
 import com.techlounge.creativeeye.io.CEInput;
 import com.techlounge.creativeeye.io.CEKeyboardMouseListener;
@@ -88,6 +89,12 @@ public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback
         } else if (key == CEInput.Key.KEY_Y && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CECustomColorRectangle());
+        } else if (key == CEInput.Key.KEY_U && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CETextureRectangle());
+        } else if (key == CEInput.Key.KEY_I && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CETextureRectangle("texture1.png"));
         } else if (key == CEInput.Key.KEY_DELETE && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
         }
