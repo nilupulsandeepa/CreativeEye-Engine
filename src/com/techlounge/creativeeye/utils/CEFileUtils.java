@@ -1,16 +1,12 @@
 package com.techlounge.creativeeye.utils;
 
 import com.techlounge.creativeeye.CEEngine;
-import com.techlounge.creativeeye.error.CEFileException;
 import com.techlounge.creativeeye.error.CEErrorCode;
-import org.lwjgl.BufferUtils;
+import com.techlounge.creativeeye.error.CEFileException;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Properties;

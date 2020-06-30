@@ -1,6 +1,5 @@
 package com.techlounge.creativeeye.graphics.geometries;
 
-import com.techlounge.creativeeye.graphics.CEColor;
 import com.techlounge.creativeeye.graphics.CEMesh;
 import com.techlounge.creativeeye.graphics.CEShader;
 import com.techlounge.creativeeye.graphics.CEVertex;

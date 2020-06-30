@@ -1,9 +1,8 @@
 package com.techlounge.creativeeye.io;
 
 import com.techlounge.creativeeye.CEEngine;
-import com.techlounge.creativeeye.error.CEException;
-import com.techlounge.creativeeye.error.CEWindowException;
 import com.techlounge.creativeeye.error.CEErrorCode;
+import com.techlounge.creativeeye.error.CEWindowException;
 import org.lwjgl.glfw.*;
 
 public class CEWindow {

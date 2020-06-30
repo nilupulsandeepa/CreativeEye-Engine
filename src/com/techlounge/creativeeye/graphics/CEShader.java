@@ -1,14 +1,9 @@
 package com.techlounge.creativeeye.graphics;
 
 import com.techlounge.creativeeye.CEEngine;
-import com.techlounge.creativeeye.error.CEErrorCallback;
-import com.techlounge.creativeeye.error.CEErrorCode;
-import com.techlounge.creativeeye.error.CEFileException;
 import com.techlounge.creativeeye.error.CEShaderException;
 import com.techlounge.creativeeye.utils.CEFileUtils;
 import org.lwjgl.opengl.GL32;
-
-import java.util.HashMap;
 
 public class CEShader {
 

@@ -3,7 +3,6 @@ package com.techlounge.creativeeye;
 import com.techlounge.creativeeye.error.CEErrorCallback;
 import com.techlounge.creativeeye.error.CEException;
 import com.techlounge.creativeeye.graphics.CERenderer;
-import com.techlounge.creativeeye.graphics.CETexture;
 import com.techlounge.creativeeye.graphics.geometries.*;
 import com.techlounge.creativeeye.io.CEInput;
 import com.techlounge.creativeeye.io.CEKeyboardMouseListener;

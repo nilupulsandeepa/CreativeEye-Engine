@@ -1,8 +1,8 @@
 package com.techlounge.creativeeye.graphics;
 
 import com.techlounge.creativeeye.CEEngine;
-import com.techlounge.creativeeye.CETextureException;
 import com.techlounge.creativeeye.error.CEErrorCode;
+import com.techlounge.creativeeye.error.CETextureException;
 import com.techlounge.creativeeye.utils.CEFileUtils;
 import com.techlounge.creativeeye.utils.CETextureImage;
 import org.lwjgl.opengl.GL32;

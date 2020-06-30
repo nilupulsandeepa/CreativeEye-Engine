@@ -1,6 +1,4 @@
-package com.techlounge.creativeeye;
-
-import com.techlounge.creativeeye.error.CEException;
+package com.techlounge.creativeeye.error;
 
 public class CETextureException extends CEException {
     public CETextureException(String errorMessage) {
