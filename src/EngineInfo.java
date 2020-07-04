@@ -1,7 +1,6 @@
 //Import LWJGL
+
 import org.lwjgl.Version;
-import org.lwjgl.*;
-import org.lwjgl.system.windows.DISPLAY_DEVICE;
 
 public class EngineInfo {
 

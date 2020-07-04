@@ -2,8 +2,14 @@ package com.techlounge.creativeeye.graphics;
 
 import com.techlounge.creativeeye.CEEngine;
 import com.techlounge.creativeeye.error.CEShaderException;
+import com.techlounge.creativeeye.maths.CEMatrix4x4;
+import com.techlounge.creativeeye.maths.CEVector2f;
+import com.techlounge.creativeeye.maths.CEVector3f;
 import com.techlounge.creativeeye.utils.CEFileUtils;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.FloatBuffer;
 
 public class CEShader {
 
@@ -15,6 +21,8 @@ public class CEShader {
     private int vertexShaderID;
     private int fragmentShaderID;
     private int shaderProgramID;
+
+    private boolean shouldBindUniform;
 
     public CEShader(String vertexShaderPath, String fragmentShaderPath) {
         this.filePath = CEFileUtils.getProperty("shaderPath");
@@ -70,6 +78,48 @@ public class CEShader {
 
     public int getShaderProgram() {
         return shaderProgramID;
+    }
+
+    public void bindUniform(String name, int value) {
+        GL32.glUniform1i(this.getUniformLocation(name), value);
+    }
+
+    public void bindUniform(String name, float value) {
+        GL32.glUniform1f(this.getUniformLocation(name), value);
+    }
+
+    public void bindUniform(String name, boolean value) {
+        GL32.glUniform1i(this.getUniformLocation(name), value ? 1 : 0);
+    }
+
+    public void bindUniform(String name, CEVector2f value) {
+        GL32.glUniform2f(this.getUniformLocation(name), value.getX(), value.getY());
+    }
+
+    public void bindUniform(String name, CEVector3f value) {
+        GL32.glUniform3f(this.getUniformLocation(name), value.getX(), value.getY(), value.getZ());
+    }
+
+    public void bindUniform(String name, CEColor value) {
+        GL32.glUniform4f(this.getUniformLocation(name), value.getRed(), value.getGreen(), value.getBlue(), value.getAlpha());
+    }
+
+    public void bindUniform(String name, CEMatrix4x4 value) {
+        FloatBuffer matrixBuffer = MemoryUtil.memAllocFloat(CEMatrix4x4.MATRIX_SIZE * CEMatrix4x4.MATRIX_SIZE);
+        matrixBuffer.put(value.getElements()).flip();
+        GL32.glUniformMatrix4fv(this.getUniformLocation(name), true, matrixBuffer);
+    }
+
+    public int getUniformLocation(String uniformName) {
+        return GL32.glGetUniformLocation(this.shaderProgramID, uniformName);
+    }
+
+    public void enableUniforms() {
+        this.shouldBindUniform = true;
+    }
+
+    public boolean shouldBindUniform() {
+        return this.shouldBindUniform;
     }
 
     public void releaseShaderProgram() {

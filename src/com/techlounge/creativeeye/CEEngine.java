@@ -94,6 +94,9 @@ public class CEEngine implements CEKeyboardMouseListener, CEWindowResizeCallback
         } else if (key == CEInput.Key.KEY_I && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
             this.renderer.addMesh(new CETextureRectangle("texture1.png"));
+        } else if (key == CEInput.Key.KEY_O && mods[0] == CEInput.Mod.NO_MOD && action == CEInput.KeyAction.KEY_PRESS) {
+            this.renderer.clearAllMeshes();
+            this.renderer.addMesh(new CEUniformRectangle("texture1.png"));
         } else if (key == CEInput.Key.KEY_DELETE && action == CEInput.KeyAction.KEY_PRESS) {
             this.renderer.clearAllMeshes();
         }

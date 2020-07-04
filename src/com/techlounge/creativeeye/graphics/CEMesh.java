@@ -151,13 +151,17 @@ public class CEMesh {
         }
         if (this.meshShader != null) {
             GL32.glUseProgram(this.meshShader.getShaderProgram());
+            if (this.meshShader.shouldBindUniform()) {
+                this.meshShader.bindUniform("scale", 2.0F);
+                this.meshShader.bindUniform("tintColor", new CEColor(0.71F, 0.9F, 0.11F, 1.0F));
+            }
             GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
             GL32.glUseProgram(0);
         } else {
             GL32.glDrawElements(GL32.GL_TRIANGLES, this.indices.length, GL32.GL_UNSIGNED_INT, 0);
         }
         if (this.material != null) {
-            GL32.glBindTexture(GL32.GL_TEXTURE_2D,0);
+            GL32.glBindTexture(GL32.GL_TEXTURE_2D, 0);
         }
         GL32.glBindBuffer(GL32.GL_ELEMENT_ARRAY_BUFFER, 0);
         for (int i = 0; i < this.attributeNameList.size(); i++) {
